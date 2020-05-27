@@ -17,23 +17,16 @@ package com.alibaba.nacos.naming.misc;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.pojo.AbstractHealthChecker;
 import com.alibaba.nacos.common.utils.VersionUtils;
-import com.alibaba.nacos.naming.healthcheck.JsonAdapter;
-import com.alibaba.nacos.naming.selector.Selector;
-import com.alibaba.nacos.naming.selector.SelectorJsonAdapter;
+import com.alibaba.nacos.core.utils.ApplicationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
-
-import static com.alibaba.nacos.core.utils.SystemUtils.NACOS_HOME;
 
 /**
  * @author nacos
@@ -117,7 +110,7 @@ public class UtilsAndCommons {
 
     public static final String UPDATE_INSTANCE_ACTION_REMOVE = "remove";
 
-    public static final String DATA_BASE_DIR = NACOS_HOME + File.separator + "data" + File.separator + "naming";
+    public static final String DATA_BASE_DIR = ApplicationUtils.getNacosHome() + File.separator + "data" + File.separator + "naming";
 
     public static final String NUMBER_PATTERN = "^\\d+$";
 
@@ -130,17 +123,6 @@ public class UtilsAndCommons {
     public static final Executor RAFT_PUBLISH_EXECUTOR;
 
     static {
-
-        // custom serializer and deserializer for fast-json
-        SerializeConfig.getGlobalInstance()
-            .put(AbstractHealthChecker.class, JsonAdapter.getInstance());
-        ParserConfig.getGlobalInstance()
-            .putDeserializer(AbstractHealthChecker.class, JsonAdapter.getInstance());
-
-        SerializeConfig.getGlobalInstance()
-            .put(Selector.class, SelectorJsonAdapter.getInstance());
-        ParserConfig.getGlobalInstance()
-            .putDeserializer(Selector.class, SelectorJsonAdapter.getInstance());
 
         // write null values, otherwise will cause compatibility issues
         JSON.DEFAULT_GENERATE_FEATURE |= SerializerFeature.WriteNullStringAsEmpty.getMask();
